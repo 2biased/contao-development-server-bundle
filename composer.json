@@ -1,0 +1,47 @@
+{
+    "name": "2biased/contao-development-server-bundle",
+    "description": "",
+    "keywords": ["contao", "module"],
+    "type": "contao-bundle",
+    "license": "LGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "2biased",
+            "email": "2biased@proton.me"
+        }
+    ],
+    "require": {
+        "php": "~8.0",
+        "contao/core-bundle": "^4.13"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.3",
+        "terminal42/contao-build-tools": "@dev"
+    },
+    "conflict": {
+        "contao/manager-plugin": "<2.0 || >=3.0"
+    },
+    "autoload":{
+        "psr-4": {
+            "TwoBiased\\ContaoDevelopmentServerBundle\\": "src/"
+        }
+    },
+    "extra":{
+        "contao-manager-plugin": "TwoBiased\\ContaoDevelopmentServerBundle\\ContaoManager\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": true,
+            "php-http/discovery": true,
+            "contao/manager-plugin": true,
+            "terminal42/contao-build-tools": true
+        }
+    },
+    "scripts": {
+        "all": [
+            "@cs-fixer",
+            "@rector",
+            "@phpstan"
+        ]
+    }
+}
