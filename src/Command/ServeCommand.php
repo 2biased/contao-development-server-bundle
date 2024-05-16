@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\Process;
 
 class ServeCommand extends Command
 {
@@ -25,7 +26,7 @@ class ServeCommand extends Command
     protected static $defaultDescription = 'Starts a development server';
 
     public function __construct(
-        private string $webDir,
+        private readonly string $webDir,
     ) {
         parent::__construct();
     }
@@ -40,15 +41,21 @@ class ServeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        passthru(sprintf(
-            '%s -S %s:%s -t %s %s',
+        $process = new Process([
             (new PhpExecutableFinder())->find(false),
-            $input->getOption('host'),
-            $input->getOption('port'),
+            '-S',
+            $input->getOption('host').':'.$input->getOption('port'),
+            '-t',
             $this->webDir,
-            __DIR__.'/../Resources/server.php',
-        ), $status);
+            __DIR__.'/../../server.php',
+        ]);
 
-        return null === $status ? Command::SUCCESS : Command::FAILURE;
+        $process->run(
+            static function ($type, $buffer): void {
+                echo $buffer;
+            }
+        );
+
+        return $process->isSuccessful() ? Command::SUCCESS : Command::FAILURE;
     }
 }
