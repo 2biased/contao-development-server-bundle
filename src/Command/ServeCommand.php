@@ -50,11 +50,15 @@ class ServeCommand extends Command
             __DIR__.'/../../server.php',
         ]);
 
-        $process->run(
+        $process->start(
             static function ($type, $buffer): void {
                 echo $buffer;
-            }
+            },
         );
+
+        while ($process->isRunning()) {
+            usleep(500 * 1000);
+        }
 
         return $process->isSuccessful() ? Command::SUCCESS : Command::FAILURE;
     }
